@@ -7,7 +7,43 @@ on:
   pull_request:
     branches:
       - main
+    types:
+      - opened
+      - synchronize
+      - reopened
+  workflow_dispatch:
+    inputs:
+      workflow:
+        required: true
+        type: choice
+        options:
+          - lint-and-test
+        description: Choose the workflow to run
+        default: lint-and-test
 jobs:
+  typescript-lint-and-scan:
+    if: >
+      github.event_name == 'push'
+      || github.event_name == 'pull_request'
+      || (github.event_name == 'workflow_dispatch' && inputs.workflow == 'lint-and-test')
+    uses: dceoy/gh-actions-for-devops/.github/workflows/typescript-lint-and-scan.yml@main
+    permissions:
+      contents: read
+    with:
+      package-path: .
+      node-version: 'lts/*'
+  github-codeql-analysis:
+    if: >
+      github.event_name == 'push'
+      || (github.event_name == 'workflow_dispatch' && inputs.workflow == 'lint-and-test')
+    uses: dceoy/gh-actions-for-devops/.github/workflows/github-codeql-analysis.yml@main
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    with:
+      language: >
+        ["typescript"]
   dependabot-auto-merge:
     if: >
       github.event_name == 'pull_request' && github.actor == 'dependabot[bot]'
