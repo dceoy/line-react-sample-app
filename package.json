@@ -4,11 +4,17 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "dev:pages": "wrangler pages dev dist --port 8788",
+    "build": "tsc -b && vite build",
+    "deploy:pages": "wrangler pages deploy dist",
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx .",
+    "lint:fix": "eslint --fix --ext .js,.jsx,.ts,.tsx .",
+    "format": "prettier --write '**/*.{js,jsx,ts,tsx,json,css,scss,md,html,htm}'",
+    "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,css,scss,md,html,htm}\"",
+    "typecheck": "tsc -b",
     "preview": "vite preview",
-    "lint": "eslint --ext .js,.jsx,.ts,.tsx . && tsc --noEmit",
-    "format": "prettier --write '**/*.{js,jsx,ts,tsx,json,css,scss,md}'",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "vitest run --coverage",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@line/liff": "2.27.3",
